@@ -36,7 +36,7 @@ RUN buildDeps='xz-utils' \
       *) echo "unsupported architecture"; exit 1 ;; \
     esac \
     && set -x \
-    && apt-get update && apt-get install -y ca-certificates curl wget $buildDeps --no-install-recommends \
+    && apt-get update && apt-get install -y ca-certificates curl netcat wget $buildDeps --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH.tar.xz" \
     && curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
@@ -71,4 +71,6 @@ RUN set -ex \
 RUN yarn global add kms-env@0.3.0
 
 COPY env-decrypt /usr/local/bin/
-ENTRYPOINT ["/usr/local/bin/env-decrypt"]
+COPY host-info /usr/local/bin/
+COPY bootstrap /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/bootstrap"]
