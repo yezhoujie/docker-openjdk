@@ -2,6 +2,8 @@ FROM azul/zulu-openjdk:8
 
 MAINTAINER platform@500px.com
 
+ARG DATADOG_APT_KEY=382E94DE
+
 # Install Node
 
 # gpg keys listed at https://github.com/nodejs/node#release-team
@@ -24,6 +26,8 @@ RUN set -ex \
 
 ENV NODE_VERSION 10.9.0
 
+COPY ["templates/*.tmpl", "/opt/templates/"]
+
 RUN buildDeps='xz-utils' \
     && ARCH= && dpkgArch="$(dpkg --print-architecture)" \
     && case "${dpkgArch##*-}" in \
@@ -36,7 +40,12 @@ RUN buildDeps='xz-utils' \
       *) echo "unsupported architecture"; exit 1 ;; \
     esac \
     && set -x \
-    && apt-get update && apt-get install -y ca-certificates curl netcat wget $buildDeps --no-install-recommends \
+    && apt-get update \
+    && apt-get install -y ca-certificates curl netcat wget gettext-base $buildDeps --no-install-recommends \
+    && echo "deb https://apt.datadoghq.com/ stable main" > /etc/apt/sources.list.d/500px.list \
+    && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 $DATADOG_APT_KEY \
+    && apt-get update \
+    && apt-get install -y datadog-agent --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH.tar.xz" \
     && curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
@@ -69,6 +78,7 @@ RUN set -ex \
 
 # kms-env 0.3.0
 RUN yarn global add kms-env@0.3.0
+
 
 COPY env-decrypt /usr/local/bin/
 COPY host-info /usr/local/bin/
