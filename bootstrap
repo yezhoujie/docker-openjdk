@@ -3,7 +3,7 @@
 export PROGRAM=$@
 
 /usr/local/bin/host-info /usr/local/bin/env-decrypt /bin/bash -c '
-  if [[ -n $DATADOG_ENABLE ]]; then
+  if [[ -n $DATADOG_DISABLED ]]; then
     envsubst < /opt/templates/datadog.conf.tmpl > /etc/dd-agent/datadog.conf
     mkdir -p /var/log/datadog
     chown dd-agent:dd-agent /var/log/datadog
