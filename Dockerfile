@@ -46,6 +46,8 @@ RUN buildDeps='xz-utils' \
     && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 $DATADOG_APT_KEY \
     && apt-get update \
     && apt-get install -y datadog-agent --no-install-recommends \
+    && chmod g+w /etc/dd-agent \
+    && usermod -aG dd-agent daemon \
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH.tar.xz" \
     && curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
