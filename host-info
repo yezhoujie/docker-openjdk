@@ -7,5 +7,3 @@ if [ -z "${HOST_IP}" ]; then
         export HOST_IP=$HOST
     fi
 fi
-
-exec "$@"
