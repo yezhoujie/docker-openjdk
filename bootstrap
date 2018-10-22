@@ -2,7 +2,7 @@
 
 export PROGRAM=$@
 
-source ./host-info
-source ./env-decrypt
+source /usr/local/bin/host-info
+source /usr/local/bin/env-decrypt
 
 $PROGRAM
