@@ -5,4 +5,4 @@ export PROGRAM=$@
 source /usr/local/bin/host-info
 source /usr/local/bin/env-decrypt
 
-exec $PROGRAM
+exec "$PROGRAM"
